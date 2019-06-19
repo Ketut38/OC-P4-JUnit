@@ -1,5 +1,6 @@
 package com.dummy.myerp.model.bean.comptabilite;
 
+
 import java.math.BigDecimal;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -28,7 +29,7 @@ public class EcritureComptableTest {
         vEcriture.setLibelle("Equilibrée");
         vEcriture.getListLigneEcriture().add(this.createLigne(1, "200.50", null));
         vEcriture.getListLigneEcriture().add(this.createLigne(1, "100.50", "33"));
-        vEcriture.getListLigneEcriture().add(this.createLigne(2, null, "301"));
+        vEcriture.getListLigneEcriture().add(this.createLigne(2, null, "301.00"));
         vEcriture.getListLigneEcriture().add(this.createLigne(2, "40", "7"));
         Assert.assertTrue(vEcriture.toString(), vEcriture.isEquilibree());
 
@@ -40,5 +41,26 @@ public class EcritureComptableTest {
         vEcriture.getListLigneEcriture().add(this.createLigne(2, "1", "2"));
         Assert.assertFalse(vEcriture.toString(), vEcriture.isEquilibree());
     }
+
+    
+    @Test
+	public void testGetTotalDebit() {
+    	
+    	EcritureComptable vEcriture;
+        vEcriture = new EcritureComptable();
+        vEcriture.getListLigneEcriture().add(this.createLigne(1, "200.50", null));
+        vEcriture.getListLigneEcriture().add(this.createLigne(1, "100.50", "33"));
+        Assert.assertEquals(vEcriture.getTotalDebit().toString(), "301.00");
+
+	}
+
+	@Test
+	public void testGetTotalCredit() {
+		EcritureComptable vEcriture;
+        vEcriture = new EcritureComptable();
+        vEcriture.getListLigneEcriture().add(this.createLigne(1, "200.50", "44.50"));
+        vEcriture.getListLigneEcriture().add(this.createLigne(1, "100.50", "32.50"));
+        Assert.assertEquals(vEcriture.getTotalCredit().toString(), "77.00");
+	}
 
 }
