@@ -88,7 +88,8 @@ public class EcritureComptable {
                 vRetour = vRetour.add(vLigneEcritureComptable.getDebit());
             }
         }
-        return vRetour;
+      //ajout de RG7 sur vRetour(2chiffres après virgule)
+        return vRetour.setScale(2);
     }
 
     /**
@@ -103,15 +104,24 @@ public class EcritureComptable {
                 vRetour = vRetour.add(vLigneEcritureComptable.getCredit());
             }
         }
-        return vRetour;
+        //ajout de RG7 sur vRetour(2chiffres après virgule)
+        return vRetour.setScale(2);
+        
+      //DONE modification de getDebit() en getCredit()  
     }
 
     /**
      * Renvoie si l'écriture est équilibrée (TotalDebit = TotalCrédit)
      * @return boolean
-     */
-    public boolean isEquilibree() {
-        boolean vRetour = this.getTotalDebit().equals(getTotalCredit());
+     Comparer 2 big decimals != equals */
+	public boolean isEquilibree() {
+		boolean vRetour = false;
+		
+		//Modification de equals en compareTo pour bigDecimals
+		if (this.getTotalCredit().compareTo(getTotalDebit()) == 0) {
+			vRetour = true;
+		}
+
         return vRetour;
     }
 
