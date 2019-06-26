@@ -23,8 +23,8 @@ public class EcritureComptable {
     private Integer id;
     /** Journal comptable */
     @NotNull private JournalComptable journal;
-    /** The Reference. */
-    @Pattern(regexp = "\\d{1,5}-\\d{4}/\\d{5}")
+    /** The Reference. XX-AAAA/#####. ex : BQ-2016/00001 */
+    @Pattern(regexp = "\\[A-Z]{2}-\\d{4}/\\d{5}")
     private String reference;
     /** The Date. */
     @NotNull private Date date;
