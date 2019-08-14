@@ -1,22 +1,30 @@
 package com.dummy.myerp.business.impl.manager;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+import org.junit.Assert;
 import org.junit.Test;
-
+import org.springframework.transaction.TransactionStatus;
 
 import com.dummy.myerp.model.bean.comptabilite.CompteComptable;
 import com.dummy.myerp.model.bean.comptabilite.EcritureComptable;
 import com.dummy.myerp.model.bean.comptabilite.JournalComptable;
 import com.dummy.myerp.model.bean.comptabilite.LigneEcritureComptable;
 import com.dummy.myerp.technical.exception.FunctionalException;
+import com.dummy.myerp.testbusiness.BusinessTestCase;
 
 
 
-public class ComptabiliteManagerImplTest {
+
+
+public class ComptabiliteManagerImplTest extends BusinessTestCase {
 
     private ComptabiliteManagerImpl manager = new ComptabiliteManagerImpl();
+    TransactionStatus vTS = getTransactionManager().beginTransactionMyERP();
     
 
     @Test
@@ -109,7 +117,7 @@ public class ComptabiliteManagerImplTest {
         vEcritureComptable.setJournal(new JournalComptable("AC", "Achat"));
         vEcritureComptable.setDate(new Date());
         vEcritureComptable.setLibelle("Libelle"); 
-        vEcritureComptable.setReference("AC-2019/00001");
+        vEcritureComptable.setReference("AC-2018/00001");
        
         
         System.out.println(vEcritureComptable.getReference());
@@ -134,5 +142,39 @@ public class ComptabiliteManagerImplTest {
     
     }
     
-    
+ // vérifier que l'année dans la référence correspond bien à la date de l'écriture, idem pour le code journal...
+ 	@Test
+ 	public void addReferenceTestWhenSequenceExist() throws Exception {
+ 		EcritureComptable vEcritureComptable;
+		vEcritureComptable = new EcritureComptable();
+		vEcritureComptable.setJournal(manager.getJournalComptableByCode("AC"));
+		Date pDate = Date.from( Instant.ofEpochSecond(1466208000));
+		//Date pDate = new Date(1466208000);
+		vEcritureComptable.setDate(pDate);
+		vEcritureComptable.setLibelle("Test");
+		CompteComptable compte401 = manager.getCompteComptableByCode(401);
+		CompteComptable compte512 = manager.getCompteComptableByCode(512);
+		
+		vEcritureComptable.getListLigneEcriture()
+		.add(new LigneEcritureComptable(compte401, null, new BigDecimal(123), null));
+		vEcritureComptable.getListLigneEcriture()
+		.add(new LigneEcritureComptable(compte512, null, null, new BigDecimal(123)));
+
+		manager.addReference(vEcritureComptable);
+		
+		String reference = vEcritureComptable.getReference();
+		char[] yearOfRef = {reference.charAt(3), reference.charAt(4), reference.charAt(5), reference.charAt(6)};
+		String strYear = String.valueOf(yearOfRef);
+		
+		Calendar calendar = new GregorianCalendar();
+    	calendar.setTime(vEcritureComptable.getDate());
+    	//recuperation de l'année de l'ecriture
+    	int yearFromTest = calendar.get(Calendar.YEAR);
+    	int yearFromReference = Integer.parseInt(strYear);
+    	
+    	Assert.assertTrue(yearFromTest == yearFromReference);
+    	getTransactionManager().rollbackMyERP(vTS);
+
+ 		
+ 	}
 }

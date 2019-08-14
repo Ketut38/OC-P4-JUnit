@@ -1,8 +1,6 @@
-package com.dummy.myerp.testbusiness.business;
+package com.dummy.myerp.testbusiness;
 
-import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
 
 
 /**
@@ -21,10 +19,10 @@ public class TestInitSpring extends BusinessTestCase {
     /**
      * Teste l'initialisation du contexte Spring
      */
-    @Test
+   /* @Test
     public void testInit() {
         SpringRegistry.init();
         assertNotNull(SpringRegistry.getBusinessProxy());
         assertNotNull(SpringRegistry.getTransactionManager());
-    }
+    }*/
 }

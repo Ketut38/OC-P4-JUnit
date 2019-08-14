@@ -88,16 +88,21 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 		}
 		return compteComptable;
 	}
-
+	 /*appeler le comptabilité DAO (érire une métode pour recuperer une séquence
+	  *  d'ecriture comptable par année dedans).*/	
 	@Override
-	public SequenceEcritureComptable getSequenceJournal(String codeJournal, Integer year) {
+	public SequenceEcritureComptable getSequenceJournal(String codeJournal, Integer year) throws FunctionalException {
+
 		try {
+
 			return getDaoProxy().getComptabiliteDao().getSequenceEcritureComptableByCodeAndYear(codeJournal, year);
-		} catch (EmptyResultDataAccessException e) {
-			return null;
 		}
 
+		catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -105,7 +110,7 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 	// TODO à tester
 	@Override
 	public synchronized void addReference(EcritureComptable pEcritureComptable) throws FunctionalException {
-		// TODO à implémenter
+	
 		// Bien se réferer à la JavaDoc de cette méthode !
 		/*
 		 * appeler le comptabilité DAO (érire une métode pour recuperer une séquence
@@ -155,11 +160,15 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
         	
     	}
     	
-   
+   	
+    	
+			insertEcritureComptable(pEcritureComptable);
+		   	 
 			
-    		insertEcritureComptable(pEcritureComptable);
-			 
-    		updateEcritureComptable(pEcritureComptable);
+		
+				updateEcritureComptable(pEcritureComptable);
+		
+
 			
 		
     	

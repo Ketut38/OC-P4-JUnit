@@ -41,7 +41,7 @@ public interface ComptabiliteManager {
     
     CompteComptable getCompteComptableByCode(int numeroCompte);
     
-    SequenceEcritureComptable getSequenceJournal(String codeJournal, Integer year);
+    SequenceEcritureComptable getSequenceJournal(String codeJournal, Integer year) throws FunctionalException;
 
     /**
      * Ajoute une référence à l'écriture comptable.

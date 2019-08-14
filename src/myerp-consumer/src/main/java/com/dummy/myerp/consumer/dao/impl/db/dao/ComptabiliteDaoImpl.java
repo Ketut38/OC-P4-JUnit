@@ -20,6 +20,7 @@ import com.dummy.myerp.model.bean.comptabilite.EcritureComptable;
 import com.dummy.myerp.model.bean.comptabilite.JournalComptable;
 import com.dummy.myerp.model.bean.comptabilite.LigneEcritureComptable;
 import com.dummy.myerp.model.bean.comptabilite.SequenceEcritureComptable;
+import com.dummy.myerp.technical.exception.FunctionalException;
 import com.dummy.myerp.technical.exception.NotFoundException;
 
 
@@ -113,25 +114,29 @@ public class ComptabiliteDaoImpl extends AbstractDbConsumer implements Comptabil
         return vBean;
     }
     
-    /** SQLgetEcritureComptable */
+    /** SQLgetSequenceEcritureComptableByCodeAndYear */
     private static String SQLgetSequenceEcritureByCodeJournalAndYear;
     public void setSQLgetSequenceEcritureByCodeJournalAndYear(String pSQLgetSequenceEcritureByCodeJournalAndYear) {
     	SQLgetSequenceEcritureByCodeJournalAndYear = pSQLgetSequenceEcritureByCodeJournalAndYear;
     }
     
 	@Override
-	public SequenceEcritureComptable getSequenceEcritureComptableByCodeAndYear(String pCodeJournal, Integer pYear) throws NotFoundException {
+	public SequenceEcritureComptable getSequenceEcritureComptableByCodeAndYear(String pCodeJournal, Integer pYear) throws FunctionalException {
 		NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource(DataSourcesEnum.MYERP));
         MapSqlParameterSource vSqlParams = new MapSqlParameterSource();
-        vSqlParams.addValue("codeJournal", pCodeJournal);
+        vSqlParams.addValue("journal_code", pCodeJournal);
         vSqlParams.addValue("annee", pYear);
         SequenceEcritureComptableRM vRM = new SequenceEcritureComptableRM();
         SequenceEcritureComptable vBean;
-        try {
-            vBean = vJdbcTemplate.queryForObject(SQLgetSequenceEcritureByCodeJournalAndYear, vSqlParams, vRM);
-        } catch (EmptyResultDataAccessException vEx) {
-            throw new NotFoundException("SequenceEcritureComptable non trouvée");
-        }
+     try {
+    	 vBean = vJdbcTemplate.queryForObject(SQLgetSequenceEcritureByCodeJournalAndYear, vSqlParams, vRM);
+    	 
+     }catch(EmptyResultDataAccessException vEx){
+    	 throw new FunctionalException("Sequence d'ecriture comptable non trouvée");
+    	 
+     }
+        
+       
         return vBean;
 		
 	}

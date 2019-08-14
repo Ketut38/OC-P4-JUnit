@@ -1,4 +1,4 @@
-package com.dummy.myerp.testbusiness.business;
+package com.dummy.myerp.testbusiness;
 
 
 import com.dummy.myerp.business.contrat.BusinessProxy;
