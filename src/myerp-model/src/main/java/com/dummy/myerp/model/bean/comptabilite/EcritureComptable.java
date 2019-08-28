@@ -24,7 +24,7 @@ public class EcritureComptable {
     /** Journal comptable */
     @NotNull private JournalComptable journal;
     /** The Reference. XX-AAAA/#####. ex : BQ-2016/00001 */
-//    @Pattern(regexp = "\\[A-Z]{2}-\\d{4}\\/\\d{5}")
+  @Pattern(regexp = "[A-Z]{2}-\\d{4}/\\d{5}")
     private String reference;
     /** The Date. */
     @NotNull private Date date;
@@ -97,6 +97,8 @@ public class EcritureComptable {
      *
      * @return {@link BigDecimal}, {@link BigDecimal#ZERO} si aucun montant au crédit
      */
+    
+    //modification de getDebit() en getCredit()  
     public BigDecimal getTotalCredit() {
         BigDecimal vRetour = BigDecimal.ZERO;
         for (LigneEcritureComptable vLigneEcritureComptable : listLigneEcriture) {
@@ -107,7 +109,7 @@ public class EcritureComptable {
         //ajout de RG7 sur vRetour(2chiffres après virgule)
         return vRetour.setScale(2);
         
-      //DONE modification de getDebit() en getCredit()  
+     
     }
 
     /**
