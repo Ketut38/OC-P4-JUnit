@@ -110,68 +110,59 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 	// TODO à tester
 	@Override
 	public synchronized void addReference(EcritureComptable pEcritureComptable) throws FunctionalException {
-	
+
 		// Bien se réferer à la JavaDoc de cette méthode !
 		/*
 		 * appeler le comptabilité DAO (érire une métode pour recuperer une séquence
-		 * d'ecriture comptable par année dedans) Le principe : 
-		 * 1. Remonter depuis la persitance la dernière valeur de la séquence du journal 
-		 *  pour l'année de l'écriture (table sequence_ecriture_comptable)
-		 
-		 * 3. Mettre à jour la référence de l'écriture avec la référence calculée (RG_Compta_5) 
-		 * 4. Enregistrer (insert/update) la valeur de la séquence en persitance (table sequence_ecriture_comptable)
+		 * d'ecriture comptable par année dedans) Le principe : 1. Remonter depuis la
+		 * persitance la dernière valeur de la séquence du journal pour l'année de
+		 * l'écriture (table sequence_ecriture_comptable)
+		 * 
+		 * 3. Mettre à jour la référence de l'écriture avec la référence calculée
+		 * (RG_Compta_5) 4. Enregistrer (insert/update) la valeur de la séquence en
+		 * persitance (table sequence_ecriture_comptable)
 		 */
-		
+
 		Calendar calendar = new GregorianCalendar();
-    	calendar.setTime(pEcritureComptable.getDate());
-    	//recuperation de l'année de l'ecriture
-    	int year = calendar.get(Calendar.YEAR);
-    	//recuperation du code Journal de l'ecriture
-    	String codeJournal=pEcritureComptable.getJournal().getCode();
+		calendar.setTime(pEcritureComptable.getDate());
+		// recuperation de l'année de l'ecriture
+		int year = calendar.get(Calendar.YEAR);
+		// recuperation du code Journal de l'ecriture
+		String codeJournal = pEcritureComptable.getJournal().getCode();
 
-    	SequenceEcritureComptable sequenceEcritureComptable = getSequenceJournal(codeJournal,year);
-    	
-    	/*2. * S'il n'y a aucun enregistrement pour le journal pour l'année concernée :
-		 *   1. Utiliser le numéro 1. Sinon : 
-		 *   1. Utiliser la dernière valeur + 1 */
-		
-    	if(sequenceEcritureComptable==null) {
-    		//si return == null --> creation nouvelle ligne
-    		sequenceEcritureComptable = new SequenceEcritureComptable();
-    		sequenceEcritureComptable.setAnnee(year);
-    		sequenceEcritureComptable.setDerniereValeur(1);
-    		
-    		// format sur 5 chiffres
-        	DecimalFormat nbFormat = new DecimalFormat ("00000");
-        	// creation string reference
-        	String reference = codeJournal + "-" + year + "/" + nbFormat.format(1);
-        	//ajout à l'écriture comptable puis update sur la base
-        	pEcritureComptable.setReference(reference);
-        	
-    	}else {
-    		
-    		int lastEntry = sequenceEcritureComptable.getDerniereValeur();
-    		sequenceEcritureComptable.setDerniereValeur(lastEntry + 1);
-    		DecimalFormat nbFormat = new DecimalFormat ("00000");
-        	// creation ref
-        	String reference = codeJournal + "-" + year + "/" + nbFormat.format(sequenceEcritureComptable.getDerniereValeur());
-        	//ajout de la ref
-        	pEcritureComptable.setReference(reference);
-        	
-    	}
-    	
-   	
-    	
-			insertEcritureComptable(pEcritureComptable);
-		   	 
-			
-		
-				updateEcritureComptable(pEcritureComptable);
-		
+		SequenceEcritureComptable sequenceEcritureComptable = getSequenceJournal(codeJournal, year);
 
-			
-		
-    	
+		/*
+		 * 2. * S'il n'y a aucun enregistrement pour le journal pour l'année concernée :
+		 * 1. Utiliser le numéro 1. Sinon : 1. Utiliser la dernière valeur + 1
+		 */
+
+		if (sequenceEcritureComptable == null) {
+			// si return == null --> creation nouvelle ligne
+			sequenceEcritureComptable = new SequenceEcritureComptable();
+			sequenceEcritureComptable.setAnnee(year);
+			sequenceEcritureComptable.setDerniereValeur(1);
+
+			// format sur 5 chiffres
+			DecimalFormat nbFormat = new DecimalFormat("00000");
+			// creation string reference
+			String reference = codeJournal + "-" + year + "/" + nbFormat.format(1);
+			// ajout à l'écriture comptable puis update sur la base
+			pEcritureComptable.setReference(reference);
+
+		} else {
+
+			int lastEntry = sequenceEcritureComptable.getDerniereValeur();
+			sequenceEcritureComptable.setDerniereValeur(lastEntry + 1);
+			DecimalFormat nbFormat = new DecimalFormat("00000");
+			// creation ref
+			String reference = codeJournal + "-" + year + "/"
+					+ nbFormat.format(sequenceEcritureComptable.getDerniereValeur());
+			// ajout de la ref
+			pEcritureComptable.setReference(reference);
+
+		}
+
 	}
 
 	/**
@@ -237,9 +228,7 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 	// l'écriture, idem pour le code journal... ex: BQ-2016/00001
 
 	protected void checkRG5(EcritureComptable pEcritureComptable) throws FunctionalException {
-
 		String ref = pEcritureComptable.getReference();
-
 		Date date = pEcritureComptable.getDate();
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
@@ -255,8 +244,8 @@ public class ComptabiliteManagerImpl extends AbstractBusinessManager implements 
 	}
 
 	protected void checkRG5Regex(EcritureComptable pEcritureComptable) throws FunctionalException {
+		
 		String ref = pEcritureComptable.getReference();
-
 		// tester la regex
 		Boolean matchRef = ref.matches("\\[A-Z]{2}\\-\\d{4}\\/\\d{5}");
 		System.out.println(matchRef);
